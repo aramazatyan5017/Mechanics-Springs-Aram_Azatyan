@@ -45,16 +45,13 @@ public class Spring {
 
     private double[] getPositionArray(int arrayLength, double x0, double v0, double t, double dt, double m) {
         double[] positions = new double[arrayLength];
-
         double omega = calculateOmega(this.getK(), m);
         double amplitude = v0 == 0 ? x0 : calculateAmplitude(x0, v0 / (omega * -1));
         double phaseShift = v0 == 0 ? 0 : calculatePhaseShift(x0, v0 / (omega * -1));
-
         for (int i = 0; i < arrayLength; i++) {
             positions[i] = positionOfHarmonicMotion(t, amplitude, omega, phaseShift);
             t += dt;
         }
-
         return positions;
     }
 
@@ -79,7 +76,7 @@ public class Spring {
         BigDecimal k1 = new BigDecimal(this.k + "");
         BigDecimal k2 = new BigDecimal(that.k + "");
         double keq = k1.multiply(k2).divide(new BigDecimal(this.k + that.k + ""),
-                new MathContext(3, RoundingMode.FLOOR)).doubleValue();
+                new MathContext(5, RoundingMode.FLOOR)).doubleValue();
         return new Spring(keq);
     }
 
