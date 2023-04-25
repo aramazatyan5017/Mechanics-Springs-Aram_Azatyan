@@ -28,6 +28,7 @@ public class SpringArray {
      */
     @SuppressWarnings("all")
     public static Spring equivalentSpring(String springExpr, Spring[] springs) {
+        if (isOpening(springExpr.charAt(0)) && isClosing(springExpr.charAt(1))) return new Spring(0); // in case that "[]" is given, since a single spring is not assumed to be a system
         Deque<Double> stiffnessStack = new ArrayDeque<>();
         Deque<Character> operationModeStack = new ArrayDeque<>();
         boolean isNewGroup = false;
@@ -67,7 +68,7 @@ public class SpringArray {
      * It is given the springExpr is valid, so no need for checking for validity
      */
     public static Spring equivalentSpringTreeSolution(String springExpr, Spring[] springs) {
-        if (isOpening(springExpr.charAt(0)) && isClosing(springExpr.charAt(1))) return springs[0]; // in case that a single spring is given
+        if (isOpening(springExpr.charAt(0)) && isClosing(springExpr.charAt(1))) return new Spring(0); // in case that "[]" is given, since a single spring is not assumed to be a system
         TreeNode<Double> tree = constructSpringTree(springExpr, springs);
         return new Spring(compressSpringTree(tree));
     }
@@ -116,22 +117,22 @@ public class SpringArray {
 
     private static double compressSpringTree(TreeNode<Double> root) {
         springTreeCompressHelper(root);
-        return root.val;
+        return root.value;
     }
 
     private static void springTreeCompressHelper(TreeNode<Double> root) {
         if (root == null || root.children.isEmpty()) return;
 
         if (isTerminalOperation(root)) {
-            root.val = performOperation(root.children, root.val == -1 ? OperationMode.SERIES : OperationMode.PARALLEL);
+            root.value = performOperation(root.children, root.value == -1 ? OperationMode.SERIES : OperationMode.PARALLEL);
             return;
         }
 
         for (TreeNode<Double> node : root.children) {
-            if (node.val < 0) {
+            if (node.value < 0) {
                 springTreeCompressHelper(node);
                 if (isTerminalOperation(root)) {
-                    root.val = performOperation(root.children, root.val == -1
+                    root.value = performOperation(root.children, root.value == -1
                             ? OperationMode.SERIES
                             : OperationMode.PARALLEL);
                 }
@@ -140,20 +141,20 @@ public class SpringArray {
     }
 
     private static boolean isTerminalOperation(TreeNode<Double> root) {
-        if (root.val > 0) return false;
+        if (root.value > 0) return false;
         for (TreeNode<Double> node : root.children) {
-            if (node.val < 0) return false;
+            if (node.value < 0) return false;
         }
         return true;
     }
 
     private static double performOperation(List<TreeNode<Double>> springs, OperationMode mode) {
-        if (springs.size() == 1) return springs.get(0).val;
-        Spring spring = new Spring(springs.get(0).val);
+        if (springs.size() == 1) return springs.get(0).value;
+        Spring spring = new Spring(springs.get(0).value);
         for (int i = 1; i < springs.size(); i++) {
             spring = mode == OperationMode.PARALLEL
-                    ? spring.inParallel(new Spring(springs.get(i).val))
-                    : spring.inSeries(new Spring(springs.get(i).val));
+                    ? spring.inParallel(new Spring(springs.get(i).value))
+                    : spring.inSeries(new Spring(springs.get(i).value));
         }
         return spring.getK();
     }
@@ -193,11 +194,15 @@ public class SpringArray {
         Spring s9 = new Spring(1);
         Spring s10 = new Spring(2);
 
+
         System.out.println(equivalentSpring("[]").getK());
         System.out.println(equivalentSpringTreeSolution("[]").getK());
 
-        System.out.println(equivalentSpring("[{[]}[]{[]}]").getK());
-        System.out.println(equivalentSpringTreeSolution("[{[]}[]{[]}]").getK());
+
+        String str = "[[[][[][][]]][[[[[[][[[][[]]][{[][]}]]]]]{{{}}}][[][][][][]][[[]]][[][][[[[][][]]]]][][[][]]]]".replace('[', '{').replace(']', '}');
+
+        System.out.println(equivalentSpring(str).getK());
+        System.out.println(equivalentSpringTreeSolution(str).getK());
 
 
         System.out.println(equivalentSpring("[{[]{[][][]}}[{[[{[][[][]]}]]}[][[][]]]]", new Spring[] {
@@ -206,19 +211,21 @@ public class SpringArray {
         System.out.println(equivalentSpringTreeSolution("[{[]{[][][]}}[{[[{[][[][]]}]]}[][[][]]]]", new Spring[] {
                 s1, s2, s3, s4, s5, s6, s7, s8, s9, s10
         }).getK());
+
     }
 }
 
+// just a simple class for solely the tree representation and manipulation, that's why it is not properly encapsulated
 class TreeNode<T> {
-    public T val;
+    public T value;
     public List<TreeNode<T>> children = new ArrayList<>();
 
     public TreeNode(T val) {
-        this.val = val;
+        this.value = val;
     }
 
     public TreeNode(T val, List<TreeNode<T>> children) {
-        this.val = val;
+        this.value = val;
         this.children = children == null ? new ArrayList<>() : children;
     }
 };

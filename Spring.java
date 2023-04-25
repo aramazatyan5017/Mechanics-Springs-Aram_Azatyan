@@ -17,7 +17,7 @@ public class Spring {
     }
 
     public Spring(double k) throws IllegalArgumentException {
-        if (k <= 0) throw new IllegalArgumentException("Unobtainable Stiffness");
+        if (k < 0) throw new IllegalArgumentException("Unobtainable Stiffness");
         this.k = k;
     }
 
