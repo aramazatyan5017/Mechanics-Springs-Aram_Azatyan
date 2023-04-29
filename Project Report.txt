@@ -1,0 +1,17 @@
+First of all, the first conclusion that I have made doing this project, is that Java is not so good with calculations)) When solving Task 2, I came up with two solutions: the first solution
+uses two stacks, the second one constructs a N-ary tree from the sequence of brackets and computes the effective stiffness. Although the provided test cases in the main method produce
+almost identical results, I came across some cases, where the results differed drastically (the tree solution seemed to work better). That is why I use the tree solution for the last tasks.
+The Fourier Transform works perfectly fine for a spring with stiffness that is a perfect square(4, 16, 25...), however, for other stiffnesses I get completely wrong results. I reckon that
+it has to do with the fact that the method that does the transform returns an integer. 
+When I provided many different displacement coordinates, the results were perfectly to the point. Actually I did not manage to come up with an algorithm that constructs the spring system
+using the minimum number of springs, that is why every time I need to compute the eff stiffness I connect them in a parallel manner. 
+After completing the project, I was surprised by the fact that even the most trivial problems can be solved in a matter of ways, particulartly by doing a physics simulation. This goes
+to show just how much different fields are intertwined with each other, and to me this is just beautiful!
+
+P.S. many observations and comments are not writtern here, since they are present in the code, in the form of either comments of javadoc comments.
+
+P.S.2 No outside sources were used in writing the code, it is completely implemented by me. The only outside source I used is this video:
+
+https://www.youtube.com/watch?v=TCCT_RhjHAQ&list=LL&index=9
+
+which explained the physics behind Simple Harmonic Motion with initial velocity.

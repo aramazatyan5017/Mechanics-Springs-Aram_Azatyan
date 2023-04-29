@@ -15,25 +15,11 @@ public class Converter8Bit extends Converter {
         return constructInParallel(bits);
     }
 
-    private String constructInParallel(Bit... bits) {
-        int rank = 0;
-        StringBuilder system = new StringBuilder();
-        system.append('[');
-        for (int i = bits.length - 1; i >= 0; i--) {
-            if (bits[i] == Bit.ZERO) {
-                rank++;
-                continue;
-            }
-            system.append('[');
-            int quantity = (int) Math.pow(2, rank);
-            while (quantity-- > 0) {
-                system.append("[]");
-            }
-            system.append(']');
-            rank++;
-        }
-        system.append(']');
-        return system.toString();
+    @Override
+    public int evaluateDecimalValue(double t, double dt, double x0, Bit... bits) {
+        if (bits == null || bits.length > 8) throw new IllegalArgumentException("must provide a sequence of 8 bits");
+        double[] positions = computeSpringSystemOscillations(constructUnitSpringSystem(bits), t, dt, x0);
+        return computeFrequencyAmplitudes(positions, dt);
     }
 
     public static void main(String[] args) {
@@ -48,5 +34,8 @@ public class Converter8Bit extends Converter {
         System.out.println((int) SpringArray.equivalentSpring(system2).getK());
         System.out.println((int) SpringArray.equivalentSpring(system3).getK());
         System.out.println((int) SpringArray.equivalentSpring(system4).getK());
+        System.out.println(converter.evaluateDecimalValue(10, 0.01, 0.1,
+                Bit.ONE,
+                Bit.ONE, Bit.ZERO, Bit.ZERO, Bit.ONE));
     }
 }
